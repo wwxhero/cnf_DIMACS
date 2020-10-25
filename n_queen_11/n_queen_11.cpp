@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <sstream>
 #include <list>
 #include <assert.h>
 
@@ -28,7 +29,6 @@ public:
 			outs << "q_" << x <<"_" << y;
 		else
 			outs << "q_" << x <<"_" << y << "'";
-
 #else
 		outs << m_code;
 #endif
@@ -95,9 +95,9 @@ private:
 class Formula
 {
 public:
-	Formula()
+	Formula(int n_props)
+		: m_nProps(n_props)
 	{
-
 	}
 	void Add(Clause& cls)
 	{
@@ -105,6 +105,7 @@ public:
 	}
 	void Dump(std::ostream& outs) const
 	{
+		outs << "p cnf " << m_nProps << " " << m_clses.size() << std::endl;
 		for (auto it_cls = m_clses.begin()
 			; it_cls != m_clses.end()
 			; it_cls ++)
@@ -113,6 +114,7 @@ public:
 		}
 	}
 private:
+	int m_nProps;
 	std::list<Clause> m_clses;
 };
 
@@ -278,7 +280,16 @@ int main(int argc, const char* argv[])
 	if (2 == argc)
 	{
 		int n_queen = atoi(argv[1]);
-		Formula fla;
+		Formula fla(n_queen * n_queen);
+		std::stringstream cmt;
+		cmt << "Put "
+			<< n_queen
+			<< " queen(s) on to "
+			<< n_queen
+			<< " x "
+			<< n_queen
+			<< " board";
+		std::cout << cmt.str() << std::endl;
 		EveryRowExistsQueen(n_queen, fla);
 		EveryColumnExistsQueen(n_queen, fla);
 		No2QueensOnSameRow(n_queen, fla);
