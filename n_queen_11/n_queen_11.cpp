@@ -3,20 +3,35 @@
 
 #include <iostream>
 #include <list>
+#include <assert.h>
 
 class Literal
 {
 public:
-	Literal(int code, bool val)
+	Literal(int code, bool val, int nX, int nY)
+		: m_nX(nX)
+		, m_nY(nY)
 	{
 		m_code = (val ? code : -code);
 	}
 	void Dump(std::ostream& outs) const
 	{
-		outs << m_code;
+#ifdef _DEBUG
+		int x = m_code / m_nY;
+		int y = m_code % m_nY;
+		assert(x < m_nX);
+		if (m_code > 0)
+			outs << "q_" << x <<"_" << y;
+		else
+			outs << "q_" << x <<"_" << y << "'";
+#else
+		outs << m_code + 1;
+#endif
 	}
 private:
 	int m_code;
+	const int m_nX;
+	const int m_nY;
 };
 
 class Clause
@@ -101,8 +116,8 @@ public:
 	virtual Literal encode() const
 	{
 		//to encode proposition into DIMACS literal
-		int code = m_x * m_nX + m_y + 1;
-		Literal lit(code, m_val);
+		int code = m_x * m_nY + m_y;
+		Literal lit(code, m_val, m_nX, m_nY);
 		return lit;
 	}
 
@@ -223,23 +238,23 @@ void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 
 int main(int argc, const char* argv[])
 {
-    if (2 == argc)
-    {
-    	int n_queen = atoi(argv[1]);
-    	Formula fla;
-    	EveryRowExistsQueen(n_queen, fla);
-    	EveryColumnExistsQueen(n_queen, fla);
-    	No2QueensOnSameRow(n_queen, fla);
-    	No2QueensOnSameColomn(n_queen, fla);
-    	No2QueensOnSameDiagnol(n_queen, fla);
-    	fla.Dump(std::cout);
-    	return 1;
-    }
-    else
-    {
-    	std::cout << "n_queen_11 <number of queens>" << std::endl;
-    	return 0;
-    }
+	if (2 == argc)
+	{
+		int n_queen = atoi(argv[1]);
+		Formula fla;
+		EveryRowExistsQueen(n_queen, fla);
+		EveryColumnExistsQueen(n_queen, fla);
+		No2QueensOnSameRow(n_queen, fla);
+		No2QueensOnSameColomn(n_queen, fla);
+		No2QueensOnSameDiagnol(n_queen, fla);
+		fla.Dump(std::cout);
+		return 1;
+	}
+	else
+	{
+		std::cout << "n_queen_11 <number of queens>" << std::endl;
+		return 0;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
