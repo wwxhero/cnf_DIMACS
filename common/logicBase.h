@@ -6,34 +6,22 @@
 class Literal
 {
 public:
-	Literal(int code, bool val, int nX, int nY)
-		: m_nX(nX)
-		, m_nY(nY)
+	Literal(bool val, int absCode)
+		: m_val(val)
+		, m_absCode(absCode)
 	{
-		assert(code > 0);
-		m_code = (val ? code : -code);
+		assert(m_val > -1);
 	}
-	void Dump(std::ostream& outs) const
+	virtual void Dump(std::ostream& outs) const
 	{
-#ifdef _DEBUG
-		bool posi = (m_code > 0);
-		int code_m = posi ? m_code : -m_code;
-		code_m --;
-		int x = code_m / m_nY;
-		int y = code_m % m_nY;
-		assert(x < m_nX);
-		if (posi)
-			outs << "q_" << x <<"_" << y;
+		if (m_val)
+			outs << m_absCode + 1;
 		else
-			outs << "q_" << x <<"_" << y << "'";
-#else
-		outs << m_code;
-#endif
+			outs << -(m_absCode + 1);
 	}
-private:
-	int m_code;
-	const int m_nX;
-	const int m_nY;
+protected:
+	const int m_absCode;
+	const bool m_val;
 };
 
 class Clause
@@ -41,6 +29,13 @@ class Clause
 public:
 	Clause()
 	{
+	}
+	~Clause()
+	{
+		for (auto it_lit = m_lits.begin()
+			; it_lit != m_lits.end()
+			; it_lit ++)
+			delete *it_lit;
 	}
 	explicit Clause(const std::string& cmmt)
 	{
@@ -54,13 +49,13 @@ public:
 	void DumpCNF(std::ostream& outs) const
 	{
 		auto it_lit = m_lits.begin();
-		it_lit->Dump(outs);
+		(*it_lit)->Dump(outs);
 		it_lit ++;
 		for (
 			; it_lit != m_lits.end()
 			; it_lit ++)
 		{
-			outs << " "; it_lit->Dump(outs);
+			outs << " "; (*it_lit)->Dump(outs);
 		}
 		outs << " 0" << std::endl;
 	}
@@ -79,12 +74,12 @@ public:
 			DumpCNF(outs);
 
 	}
-	void Add(const Literal& lit)
+	void Add(const Literal* lit)
 	{
 		m_lits.push_back(lit);
 	}
 private:
-	std::list<Literal> m_lits;
+	std::list<const Literal*> m_lits;
 	std::string		m_cmmt;
 };
 

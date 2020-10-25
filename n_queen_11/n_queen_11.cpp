@@ -3,11 +3,12 @@
 
 #include "logicBase.h"
 
-class P_Q_xy : public Proposition
+class P_Q_xy : public Literal
 {
 public:
 	P_Q_xy(int x, int y, int nX, int nY, bool val)
-		: Proposition(val)
+		: Literal(val
+				, x * nY + y)
 		, m_x(x)
 		, m_y(y)
 		, m_nX(nX)
@@ -15,12 +16,19 @@ public:
 	{
 	}
 
-	virtual Literal encode() const
+	virtual void Dump(std::ostream& outs) const override
 	{
-		//to encode proposition into DIMACS literal
-		int code = m_x * m_nY + m_y + 1;
-		Literal lit(code, m_val, m_nX, m_nY);
-		return lit;
+#ifdef _DEBUG
+		int x = m_absCode / m_nY;
+		int y = m_absCode % m_nY;
+		assert(x < m_nX);
+		if (m_val)
+			outs << "q_" << x <<"_" << y;
+		else
+			outs << "q_" << x <<"_" << y << "'";
+#else
+		Literal::Dump(outs);
+#endif
 	}
 
 private:
@@ -42,8 +50,8 @@ void EveryColumnExistsQueen(int n_queen, Formula& fla)
 		int n_row = n_queen;
 		for (int y = 0; y < n_row; y ++)
 		{
-			P_Q_xy qxy(x, y, n_row, n_col, true);
-			cls_x.Add(qxy.encode());
+			P_Q_xy* qxy = new P_Q_xy(x, y, n_row, n_col, true);
+			cls_x.Add(qxy);
 		}
 		fla.Add(cls_x);
 	}
@@ -60,8 +68,8 @@ void EveryRowExistsQueen(int n_queen, Formula& fla)
 		int n_col = n_queen;
 		for (int x = 0; x < n_col; x ++)
 		{
-			P_Q_xy qxy(x, y, n_col, n_row, true);
-			cls_y.Add(qxy.encode());
+			P_Q_xy* qxy = new P_Q_xy(x, y, n_col, n_row, true);
+			cls_y.Add(qxy);
 		}
 		fla.Add(cls_y);
 	}
@@ -77,14 +85,13 @@ void No2QueensOnSameColomn(int n_queen, Formula& fla)
 	{
 		for (int y = 0; y < n_row - 1; y ++)
 		{
-			P_Q_xy neg_qxy_p(x, y, n_col, n_row, false);
-			Literal neg_qxy_l = neg_qxy_p.encode();
+			P_Q_xy* neg_qxy = new P_Q_xy(x, y, n_col, n_row, false);
 			for (int y2 = y + 1; y2 < n_row; y2 ++)
 			{
 				Clause cls_xyy2;
-				P_Q_xy neg_qxy2_p(x, y2, n_col, n_row, false);
-				cls_xyy2.Add(neg_qxy_l);
-				cls_xyy2.Add(neg_qxy2_p.encode());
+				P_Q_xy* neg_qxy2 = new P_Q_xy(x, y2, n_col, n_row, false);
+				cls_xyy2.Add(neg_qxy);
+				cls_xyy2.Add(neg_qxy2);
 				fla.Add(cls_xyy2);
 			}
 		}
@@ -101,14 +108,13 @@ void No2QueensOnSameRow(int n_queen, Formula& fla)
 	{
 		for (int x = 0; x < n_col - 1; x ++)
 		{
-			P_Q_xy neg_qxy_p(x, y, n_col, n_row, false);
-			Literal neg_qxy_l = neg_qxy_p.encode();
+			P_Q_xy* neg_qxy = new P_Q_xy(x, y, n_col, n_row, false);
 			for (int x2 = x + 1; x2 < n_col; x2 ++)
 			{
 				Clause cls_xx2y;
-				P_Q_xy neg_qx2y_p(x2, y, n_col, n_row, false);
-				cls_xx2y.Add(neg_qxy_l);
-				cls_xx2y.Add(neg_qx2y_p.encode());
+				P_Q_xy* neg_qx2y = new P_Q_xy(x2, y, n_col, n_row, false);
+				cls_xx2y.Add(neg_qxy);
+				cls_xx2y.Add(neg_qx2y);
 				fla.Add(cls_xx2y);
 			}
 		}
@@ -125,8 +131,7 @@ void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 	{
 		for (int y1 = 0; y1 < n_row; y1 ++)
 		{
-			P_Q_xy neg_qx1y1_p(x1, y1, n_col, n_row, false);
-			Literal neg_qx1y1_l = neg_qx1y1_p.encode();
+			P_Q_xy* neg_qx1y1 = new P_Q_xy(x1, y1, n_col, n_row, false);
 			int x2 = x1 + 1;
 			int y2;
 			int offset[] = {-1, 1};
@@ -136,11 +141,10 @@ void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 				bool valid_y2 = (-1 < y2 && y2 < n_col);
 				if (valid_y2)
 				{
-					P_Q_xy neg_qx2y2_p(x2, y2, n_col, n_row, false);
-					Literal neg_qx2y2_l = neg_qx2y2_p.encode();
+					P_Q_xy* neg_qx2y2 = new P_Q_xy(x2, y2, n_col, n_row, false);
 					Clause cls_x1y1_x2y2;
-					cls_x1y1_x2y2.Add(neg_qx1y1_l);
-					cls_x1y1_x2y2.Add(neg_qx2y2_l);
+					cls_x1y1_x2y2.Add(neg_qx1y1);
+					cls_x1y1_x2y2.Add(neg_qx2y2);
 					fla.Add(cls_x1y1_x2y2);
 				}
 			}
