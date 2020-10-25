@@ -12,20 +12,25 @@ public:
 		: m_nX(nX)
 		, m_nY(nY)
 	{
+		assert(code > 0);
 		m_code = (val ? code : -code);
 	}
 	void Dump(std::ostream& outs) const
 	{
 #ifdef _DEBUG
-		int x = m_code / m_nY;
-		int y = m_code % m_nY;
+		bool posi = (m_code > 0);
+		int code_m = posi ? m_code : -m_code;
+		code_m --;
+		int x = code_m / m_nY;
+		int y = code_m % m_nY;
 		assert(x < m_nX);
-		if (m_code > 0)
+		if (posi)
 			outs << "q_" << x <<"_" << y;
 		else
 			outs << "q_" << x <<"_" << y << "'";
+
 #else
-		outs << m_code + 1;
+		outs << m_code;
 #endif
 	}
 private:
@@ -40,11 +45,16 @@ public:
 	Clause()
 	{
 	}
+	explicit Clause(const std::string& cmmt)
+	{
+		m_cmmt = std::move(cmmt);
+	}
 	explicit Clause(Clause&& cls)
 	{
 		m_lits = std::move(cls.m_lits);
+		m_cmmt = std::move(cls.m_cmmt);
 	}
-	void Dump(std::ostream& outs) const
+	void DumpCNF(std::ostream& outs) const
 	{
 		auto it_lit = m_lits.begin();
 		it_lit->Dump(outs);
@@ -55,6 +65,22 @@ public:
 		{
 			outs << " "; it_lit->Dump(outs);
 		}
+		outs << " 0" << std::endl;
+	}
+	void DumpCmt(std::ostream& outs) const
+	{
+		outs << "c " << m_cmmt.c_str() << std::endl;
+	}
+	void Dump(std::ostream& outs) const
+	{
+		bool is_cmmt = (m_lits.empty());
+		bool is_cnf = (m_cmmt.empty());
+		assert(!(is_cmmt && is_cnf));
+		if (is_cmmt)
+			DumpCmt(outs);
+		else
+			DumpCNF(outs);
+
 	}
 	void Add(const Literal& lit)
 	{
@@ -62,6 +88,7 @@ public:
 	}
 private:
 	std::list<Literal> m_lits;
+	std::string		m_cmmt;
 };
 
 
@@ -82,7 +109,7 @@ public:
 			; it_cls != m_clses.end()
 			; it_cls ++)
 		{
-			it_cls->Dump(outs); outs << " 0" << std::endl;
+			it_cls->Dump(outs);
 		}
 	}
 private:
@@ -116,7 +143,7 @@ public:
 	virtual Literal encode() const
 	{
 		//to encode proposition into DIMACS literal
-		int code = m_x * m_nY + m_y;
+		int code = m_x * m_nY + m_y + 1;
 		Literal lit(code, m_val, m_nX, m_nY);
 		return lit;
 	}
@@ -131,6 +158,8 @@ private:
 
 void EveryColumnExistsQueen(int n_queen, Formula& fla)
 {
+	Clause cls_cmmt("Every colomn exists a queen");
+	fla.Add(cls_cmmt);
 	int n_col = n_queen;
 	for (int x = 0; x < n_col; x ++)
 	{
@@ -147,6 +176,8 @@ void EveryColumnExistsQueen(int n_queen, Formula& fla)
 
 void EveryRowExistsQueen(int n_queen, Formula& fla)
 {
+	Clause cls_cmmt("Every row exists a queen");
+	fla.Add(cls_cmmt);
 	int n_row = n_queen;
 	for (int y = 0; y < n_row; y ++)
 	{
@@ -163,6 +194,8 @@ void EveryRowExistsQueen(int n_queen, Formula& fla)
 
 void No2QueensOnSameColomn(int n_queen, Formula& fla)
 {
+	Clause cls_cmmt("No 2 queens on the same colomn");
+	fla.Add(cls_cmmt);
 	int n_col = n_queen;
 	int n_row = n_queen;
 	for (int x = 0; x < n_col; x ++)
@@ -185,6 +218,8 @@ void No2QueensOnSameColomn(int n_queen, Formula& fla)
 
 void No2QueensOnSameRow(int n_queen, Formula& fla)
 {
+	Clause cls_cmmt("No 2 queens on the same row");
+	fla.Add(cls_cmmt);
 	int n_col = n_queen;
 	int n_row = n_queen;
 	for (int y = 0; y < n_row; y ++)
@@ -207,6 +242,8 @@ void No2QueensOnSameRow(int n_queen, Formula& fla)
 
 void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 {
+	Clause cls_cmmt("No 2 queens on the same diagnal");
+	fla.Add(cls_cmmt);
 	int n_col = n_queen;
 	int n_row = n_queen;
 	for (int x1 = 0; x1 < n_col - 1; x1 ++)
