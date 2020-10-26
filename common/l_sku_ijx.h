@@ -29,6 +29,8 @@ public:
 					m_lstCells.push_back(cell);
 					m_r2cells[r].push_back(cell);
 					m_c2cells[c].push_back(cell);
+					int g = (r/3) * 3 + (c/3);
+					m_g2cells[g].push_back(cell);
 				}
 			}
 		}
@@ -63,6 +65,10 @@ public:
 	{
 		return m_c2cells[col_i];
 	}
+	const std::list<Cell>& emptyCells_g(int gri_i) const
+	{
+		return m_g2cells[gri_i];
+	}
 	const std::list<int>& fullX() const
 	{
 		return m_fullX;
@@ -71,6 +77,7 @@ private:
 	std::list<Cell> m_lstCells;
 	std::list<Cell> m_r2cells[9];
 	std::list<Cell> m_c2cells[9];
+	std::list<Cell> m_g2cells[9];
 	const std::list<int> m_fullX;
 };
 
@@ -78,12 +85,12 @@ class L_SKU_ijx : public Literal
 {
 public:
 	L_SKU_ijx(int i_r, int i_c, int x, bool val)
-		: Literal(val, i_r * 100 + i_c * 10 + x)
+		: Literal(val, i_r * 100 + i_c * 10 + (x-1))
 		, m_r(i_r)
 		, m_c(i_c)
 		, m_x(x)
 	{
-		assert(x > -1 && x < 10);
+		assert(x > 0 && x < 10);
 	}
 
 	virtual void Dump(std::ostream& outs) const override
@@ -93,6 +100,8 @@ public:
 			outs << m_r << "_" << m_c << "_" << m_x;
 		else
 			outs << m_r << "_" << m_c << "_" << m_x << "'";
+#else
+		Literal::Dump(outs);
 #endif
 	}
 public:

@@ -59,18 +59,18 @@ void EachCellContainsNoMoreThanOneDigit(const SudokuGrid& grid, Formula& formula
 	}
 }
 
-typedef const std::list<SudokuGrid::Cell>& (SudokuGrid::*GetLineCells)(int lineId) const;
+typedef const std::list<SudokuGrid::Cell>& (SudokuGrid::*GetGroupCells)(int id) const;
 
-void EachLineContainsEveryDigitOnce(const SudokuGrid& grid, GetLineCells funcGetLine, Formula& formula)
+void EachLineContainsEveryDigitOnce(const SudokuGrid& grid, GetGroupCells funcGetGroup, Formula& formula)
 {
 	auto X = grid.fullX();
 	for (auto it_x = X.begin()
 		; it_x != X.end()
 		; it_x ++)
 	{
-		for (int r = 0; r < 9; r ++)
+		for (int id_g = 0; id_g < 9; id_g ++)
 		{
-			auto cells_l = (grid.*(funcGetLine))(r);
+			auto cells_l = (grid.*(funcGetGroup))(id_g);
 			auto ij2_end = cells_l.end();
 			auto ij_end = ij2_end; ij_end --;
 			for (auto it_ij = cells_l.begin()
@@ -98,7 +98,7 @@ void EachRowContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
 {
 	Clause cls_cmmt("3. Each row contains every digit at most once.");
 	formula.Add(cls_cmmt);
-	GetLineCells proc = &SudokuGrid::emptyCells_r;
+	GetGroupCells proc = &SudokuGrid::emptyCells_r;
 	EachLineContainsEveryDigitOnce(grid, proc, formula);
 }
 
@@ -106,65 +106,17 @@ void EachColumnContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
 {
 	Clause cls_cmmt("4. Each column contains every digit at most once.");
 	formula.Add(cls_cmmt);
-	GetLineCells proc = &SudokuGrid::emptyCells_c;
+	GetGroupCells proc = &SudokuGrid::emptyCells_c;
 	EachLineContainsEveryDigitOnce(grid, proc, formula);
 }
 
-//void EachColumnContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
-//{
-//	Clause cls_cmmt("4. Each column contains every digit at most once.");
-//	formula.Add(cls_cmmt);
-//	formula.Add(cls_cmmt);
-//	auto X = grid.fullX();
-//	for (auto it_x = X.begin()
-//		; it_x != X.end()
-//		; it_x ++)
-//	{
-//		for (int r = 0; r < 9; r ++)
-//		{
-//			auto cells_c = grid.emptyCells_c(r);
-//			auto ij2_end = cells_c.end();
-//			auto ij_end = ij2_end; ij_end --;
-//			for (auto it_ij = cells_c.begin()
-//				; it_ij != ij_end
-//				; it_ij ++)
-//			{
-//				auto it_ij2 = it_ij; it_ij2 ++;
-//				for (
-//					; it_ij2 != ij2_end
-//					; it_ij2 ++)
-//				{
-//					Literal* neg_ijx = new L_SKU_ijx(it_ij->row_i, it_ij->col_i, *it_x, false);
-//					Literal* neg_ij2x = new L_SKU_ijx(it_ij2->row_i, it_ij2->col_i, *it_x, false);
-//					Clause cls;
-//					cls.Add(neg_ijx);
-//					cls.Add(neg_ij2x);
-//					formula.Add(cls);
-//				}
-//			}
-//		}
-//	}
-//
-//}
-
-// void EachGridContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
-// {
-// 	Clause cls_cmmt("5. Each grid contains every digit at most once.");
-// 	formula.Add(cls_cmmt);
-
-// 	for (int i_g = 0; i_g < 3; i_g ++)
-// 	{
-// 		for (int j_g = 0; j_g < 3; j_g ++)
-// 		{
-// 			const std::list<int> Row_g = grid.subGridRow(i_g, j_g);
-// 			const std::list<int> Col_g = grid.subGridCol(i_g, j_g);
-
-// 		}
-// 	}
-
-
-
-// }
+void EachGridContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
+{
+	Clause cls_cmmt("5. Each grid contains every digit at most once.");
+	formula.Add(cls_cmmt);
+	GetGroupCells proc = &SudokuGrid::emptyCells_g;
+	EachLineContainsEveryDigitOnce(grid, proc, formula);
+}
 
 int main(int argc, const char* argv[])
 {
@@ -180,7 +132,7 @@ int main(int argc, const char* argv[])
     		EachCellContainsNoMoreThanOneDigit(grid, formula);
     		EachRowContainsEveryDigitOnce(grid, formula);
     		EachColumnContainsEveryDigitOnce(grid, formula);
-    		//EachGridContainsEveryDigitOnce(grid, formula);
+    		EachGridContainsEveryDigitOnce(grid, formula);
     		formula.Dump(std::cout);
     	}
     	else
