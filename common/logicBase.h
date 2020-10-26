@@ -19,10 +19,12 @@ public:
 		else
 			outs << -(m_absCode + 1);
 	}
+
 protected:
 	const int m_absCode;
 	const bool m_val;
 };
+
 
 class Clause
 {
@@ -110,14 +112,9 @@ private:
 	std::list<Clause> m_clses;
 };
 
-class Proposition
+template<typename Functor>
+bool ParseIter(const std::string& inter_s, Functor litFac, Clause& cls)
 {
-public:
-	Proposition(bool val) : m_val(val)
-	{
-	}
+	return false;
+}
 
-	virtual Literal encode() const = 0;
-protected:
-	const bool m_val;
-};
