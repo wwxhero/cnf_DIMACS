@@ -24,7 +24,11 @@ public:
 				initialized = !input.bad();
 				if (initialized
 					&& 0 == val_cell)
-					m_lstCells.push_back(Cell{ r, c });
+				{
+					Cell cell = {r, c};
+					m_lstCells.push_back(cell);
+					m_r2cells[r].push_back(cell);
+				}
 			}
 		}
 #if 0
@@ -50,12 +54,17 @@ public:
 	{
 		return m_lstCells;
 	}
+	const std::list<Cell>& emptyCells_r(int row_i) const
+	{
+		return m_r2cells[row_i];
+	}
 	const std::list<int>& fullX() const
 	{
 		return m_fullX;
 	}
 private:
 	std::list<Cell> m_lstCells;
+	std::list<Cell> m_r2cells[9];
 	const std::list<int> m_fullX;
 };
 
