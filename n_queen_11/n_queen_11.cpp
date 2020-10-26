@@ -49,10 +49,10 @@ void No2QueensOnSameColomn(int n_queen, Formula& fla)
 	{
 		for (int y = 0; y < n_row - 1; y ++)
 		{
-			L_Q_xy* neg_qxy = new L_Q_xy(x, y, n_col, n_row, false);
 			for (int y2 = y + 1; y2 < n_row; y2 ++)
 			{
 				Clause cls_xyy2;
+				L_Q_xy* neg_qxy = new L_Q_xy(x, y, n_col, n_row, false);
 				L_Q_xy* neg_qxy2 = new L_Q_xy(x, y2, n_col, n_row, false);
 				cls_xyy2.Add(neg_qxy);
 				cls_xyy2.Add(neg_qxy2);
@@ -72,10 +72,10 @@ void No2QueensOnSameRow(int n_queen, Formula& fla)
 	{
 		for (int x = 0; x < n_col - 1; x ++)
 		{
-			L_Q_xy* neg_qxy = new L_Q_xy(x, y, n_col, n_row, false);
 			for (int x2 = x + 1; x2 < n_col; x2 ++)
 			{
 				Clause cls_xx2y;
+				L_Q_xy* neg_qxy = new L_Q_xy(x, y, n_col, n_row, false);
 				L_Q_xy* neg_qx2y = new L_Q_xy(x2, y, n_col, n_row, false);
 				cls_xx2y.Add(neg_qxy);
 				cls_xx2y.Add(neg_qx2y);
@@ -95,7 +95,6 @@ void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 	{
 		for (int y1 = 0; y1 < n_row; y1 ++)
 		{
-			L_Q_xy* neg_qx1y1 = new L_Q_xy(x1, y1, n_col, n_row, false);
 			int x2 = x1 + 1;
 			int y2;
 			int offset[] = {-1, 1};
@@ -105,6 +104,7 @@ void No2QueensOnSameDiagnol(int n_queen, Formula& fla)
 				bool valid_y2 = (-1 < y2 && y2 < n_col);
 				if (valid_y2)
 				{
+					L_Q_xy* neg_qx1y1 = new L_Q_xy(x1, y1, n_col, n_row, false);
 					L_Q_xy* neg_qx2y2 = new L_Q_xy(x2, y2, n_col, n_row, false);
 					Clause cls_x1y1_x2y2;
 					cls_x1y1_x2y2.Add(neg_qx1y1);
