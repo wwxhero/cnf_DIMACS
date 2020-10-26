@@ -76,6 +76,10 @@ public:
 			DumpCNF(outs);
 
 	}
+	bool isCnf() const
+	{
+		return !m_lits.empty();
+	}
 	void Add(const Literal* lit)
 	{
 		m_lits.push_back(lit);
@@ -113,8 +117,17 @@ private:
 };
 
 template<typename Functor>
-bool ParseIter(const std::string& inter_s, Functor litFac, Clause& cls)
+bool ParseIter(std::istream& iss, Functor litFac, Clause& cls)
 {
-	return false;
+	int code_l = 0;
+	while (iss >> code_l)
+	{
+		if (0 != code_l)
+		{
+			Literal* lit = litFac(code_l);
+			cls.Add(lit);
+		}
+	}
+	return cls.isCnf();
 }
 
