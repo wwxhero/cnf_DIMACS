@@ -28,6 +28,7 @@ public:
 					Cell cell = {r, c};
 					m_lstCells.push_back(cell);
 					m_r2cells[r].push_back(cell);
+					m_c2cells[c].push_back(cell);
 				}
 			}
 		}
@@ -58,6 +59,10 @@ public:
 	{
 		return m_r2cells[row_i];
 	}
+	const std::list<Cell>& emptyCells_c(int col_i) const
+	{
+		return m_c2cells[col_i];
+	}
 	const std::list<int>& fullX() const
 	{
 		return m_fullX;
@@ -65,6 +70,7 @@ public:
 private:
 	std::list<Cell> m_lstCells;
 	std::list<Cell> m_r2cells[9];
+	std::list<Cell> m_c2cells[9];
 	const std::list<int> m_fullX;
 };
 
