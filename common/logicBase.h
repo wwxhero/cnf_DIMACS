@@ -20,7 +20,7 @@ public:
 			outs << -(m_absCode + 1);
 	}
 
-protected:
+public:
 	const int m_absCode;
 	const bool m_val;
 };
@@ -83,6 +83,10 @@ public:
 	void Add(const Literal* lit)
 	{
 		m_lits.push_back(lit);
+	}
+	const std::list<const Literal*>& cnfLiterals() const
+	{
+		return m_lits;
 	}
 private:
 	std::list<const Literal*> m_lits;

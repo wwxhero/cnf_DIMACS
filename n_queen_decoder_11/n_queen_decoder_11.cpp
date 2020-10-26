@@ -29,7 +29,27 @@ int main(int argc, const char* argv[])
 			}
 			else
 			{
-				cls.Dump(std::cout);
+				std::cout << "Solution is:" << std::endl;
+				char* grid = new char[n_queen*n_queen]{0};
+				const std::list<const Literal*>& lits = cls.cnfLiterals();
+				for (auto it_l = lits.begin()
+					; it_l != lits.end()
+					; it_l ++)
+				{
+					const L_Q_xy* qxy = static_cast<const L_Q_xy*>(*it_l);
+					grid[qxy->m_y * qxy->m_nX + qxy->m_x] = qxy->m_val ? 'x' : 'o';
+				}
+
+				for (int i_y = 0; i_y < n_queen; i_y ++)
+				{
+					std::cout << "\t";
+					for (int i_x = 0; i_x < n_queen; i_x ++)
+					{
+						std::cout << grid[i_y * n_queen + i_x] << " ";
+					}
+					std::cout << std::endl;
+				}
+				delete [] grid;
 				return 1;
 			}
 		}

@@ -38,7 +38,7 @@ public:
 #endif
 	}
 
-private:
+public:
 	const int m_x;
 	const int m_y;
 	const int m_nX;
