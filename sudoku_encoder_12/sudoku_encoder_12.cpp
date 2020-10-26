@@ -26,43 +26,38 @@ void EachCellContainsOneDigit(const SudokuGrid& grid, Formula& formula)
 	}
 }
 
-// void EachCellContainsNoMoreThanOneDigit(const SudokuGrid& grid, Formula& formula)
-// {
-// 	Clause cls_cmmt("2. Each cell contains at most one digit.");
-// 	formula.Add(cls_cmmt);
-// 	const std::list<int> Row = grid.Row();
-// 	const std::list<int> Col = grid.Col();
-// 	for(auto it_r = Row.begin()
-// 		; it_r != Row.end()
-// 		; it_r ++)
-// 	{
-// 		for(auto it_c = Col.begin()
-// 			; it_c != Col.end()
-// 			; it_c ++)
-// 		{
-// 			const std::list<int>& X = grid.fullX();
-// 			auto it_x_2_end = X.end();
-// 			auto it_x_1_end = it_x_2_end; it_x_1_end --;
-// 			for (auto it_x_1 = X.begin()
-// 				; it_x_1 < it_x_1_end
-// 				; it_x_1 ++)
-// 			{
-// 				Literal* neg_ijx1 = new L_SKU_ijx(*it_r, *it_c, *it_x_1, false);
-// 				auto it_x_2 = it_x_1; it_x_2 ++;
-// 				for (
-// 					; it_x_2 < it_x_2_end
-// 					; it_x_2 ++)
-// 				{
-// 					Clause cls;
-// 					Literal* neg_ijx2 = new L_SKU_ijx(*it_r, *it_c, *it_x_2, false);
-// 					cls.Add(neg_ijx1);
-// 					cls.Add(neg_ijx2);
-// 					formula.Add(cls);
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+void EachCellContainsNoMoreThanOneDigit(const SudokuGrid& grid, Formula& formula)
+{
+	Clause cls_cmmt("2. Each cell contains at most one digit.");
+	formula.Add(cls_cmmt);
+	const std::list<SudokuGrid::Cell>& cells = grid.emptyCells();
+	for (auto it_cell = cells.begin()
+		; it_cell != cells.end()
+		; it_cell ++)
+	{
+		const std::list<int>& X = grid.fullX();
+		auto it_x_1_end = X.end();
+		auto it_x_2_end = it_x_1_end;
+		it_x_1_end--;
+		for (auto it_x_1 = X.begin()
+			; it_x_1 != it_x_1_end
+			; it_x_1 ++)
+		{
+			auto it_x_2 = it_x_1; it_x_2 ++;
+			for (
+				; it_x_2 != it_x_2_end
+				; it_x_2 ++)
+			{
+				Literal* neg_ijx1 = new L_SKU_ijx(it_cell->row_i, it_cell->col_i, *it_x_1, false);
+				Literal* neg_ijx2 = new L_SKU_ijx(it_cell->row_i, it_cell->col_i, *it_x_2, false);
+				Clause cls;
+				cls.Add(neg_ijx1);
+				cls.Add(neg_ijx2);
+				formula.Add(cls);
+			}
+		}
+	}
+}
 
 // void EachRowContainsEveryDigitOnce(const SudokuGrid& grid, Formula& formula)
 // {
@@ -168,7 +163,7 @@ int main(int argc, const char* argv[])
     	{
     		Formula formula(1000);
     		EachCellContainsOneDigit(grid, formula);
-    		//EachCellContainsNoMoreThanOneDigit(grid, formula);
+    		EachCellContainsNoMoreThanOneDigit(grid, formula);
     		//EachRowContainsEveryDigitOnce(grid, formula);
     		//EachColumnContainsEveryDigitOnce(grid, formula);
     		//EachGridContainsEveryDigitOnce(grid, formula);
