@@ -3,7 +3,7 @@ class L_Q_xy : public Literal
 {
 public:
 	L_Q_xy(int x, int y, int nX, int nY, bool val)
-		: Literal(val, x * nY + y)
+		: Literal(val, x * nY + y + 1)
 		, m_x(x)
 		, m_y(y)
 		, m_nX(nX)
@@ -12,9 +12,9 @@ public:
 	}
 
 	L_Q_xy(int code, int nX, int nY)
-		: Literal(code > 0, std::abs(code)-1)
-		, m_x(m_absCode/nY)
-		, m_y(m_absCode%nY)
+		: Literal(code > 0, std::abs(code))
+		, m_x((m_absCode-1)/nY)
+		, m_y((m_absCode-1)%nY)
 		, m_nX(nX)
 		, m_nY(nY)
 	{

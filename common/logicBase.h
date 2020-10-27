@@ -15,9 +15,9 @@ public:
 	virtual void Dump(std::ostream& outs) const
 	{
 		if (m_val)
-			outs << m_absCode + 1;
+			outs << m_absCode;
 		else
-			outs << -(m_absCode + 1);
+			outs << -m_absCode;
 	}
 
 public:
