@@ -15,6 +15,12 @@ public:
 	bool Initialize(std::istream& input, char* vals = NULL)
 	{
 		bool initialized = true;
+		bool rExists[9][10]; // rExists[id_r][n] = true: n in [1-9] exists on row id_r
+		bool cExists[9][10];
+		bool gExists[9][10];
+		memset(rExists, true, sizeof(bool) * 90);
+		memset(cExists, true, sizeof(bool) * 90);
+		memset(gExists, true, sizeof(bool) * 90);
 		for(int r = 0; r < 9 && initialized; r ++)
 		{
 			for (int c = 0; c < 9 && initialized; c ++)
@@ -22,18 +28,43 @@ public:
 				int val_cell = 0;
 				input >> val_cell;
 				initialized = !input.bad();
-				if (initialized
-					&& 0 == val_cell)
+				if (initialized)
 				{
-					Cell cell = {r, c};
-					m_lstCells.push_back(cell);
-					m_r2cells[r].push_back(cell);
-					m_c2cells[c].push_back(cell);
 					int g = (r/3) * 3 + (c/3);
-					m_g2cells[g].push_back(cell);
+					if (0 == val_cell)
+					{
+						Cell cell = {r, c};
+						m_lstCells.push_back(cell);
+						m_r2cells[r].push_back(cell);
+						m_c2cells[c].push_back(cell);
+						m_g2cells[g].push_back(cell);
+					}
+					else
+					{
+						rExists[r][val_cell] = false; //remove val_cell from row 'r' domain
+						cExists[c][val_cell] = false; //remove val_cell from row 'c' domain
+						gExists[g][val_cell] = false; //remove val_cell from row 'g' domain
+					}
 				}
 				if (vals)
 					vals[r*9 + c] = char(val_cell + '0');
+			}
+		}
+
+		if (initialized)
+		{
+			for (int i_g = 0; i_g < 9; i_g ++)
+			{
+				for (int x = 1; x < 10; x ++)
+				{
+					if (rExists[i_g][x])
+						m_r2X[i_g].push_back(x);
+					if (cExists[i_g][x])
+						m_c2X[i_g].push_back(x);
+					if (gExists[i_g][x])
+						m_g2X[i_g].push_back(x);
+
+				}
 			}
 		}
 #if 0
@@ -63,13 +94,25 @@ public:
 	{
 		return m_r2cells[row_i];
 	}
+	const std::list<int>& xDomain_r(int row_i) const
+	{
+		return m_r2X[row_i];
+	}
 	const std::list<Cell>& emptyCells_c(int col_i) const
 	{
 		return m_c2cells[col_i];
 	}
+	const std::list<int>& xDomain_c(int row_i) const
+	{
+		return m_c2X[row_i];
+	}
 	const std::list<Cell>& emptyCells_g(int gri_i) const
 	{
 		return m_g2cells[gri_i];
+	}
+	const std::list<int>& xDomain_g(int row_i) const
+	{
+		return m_g2X[row_i];
 	}
 	const std::list<int>& fullX() const
 	{
@@ -78,8 +121,11 @@ public:
 private:
 	std::list<Cell> m_lstCells;
 	std::list<Cell> m_r2cells[9];
+	std::list<int>	m_r2X[9];
 	std::list<Cell> m_c2cells[9];
+	std::list<int>	m_c2X[9];
 	std::list<Cell> m_g2cells[9];
+	std::list<int>	m_g2X[9];
 	const std::list<int> m_fullX;
 };
 
