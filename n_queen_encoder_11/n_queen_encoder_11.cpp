@@ -1,4 +1,4 @@
-// n_queen_11.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// n_queen_encoder_11.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include "L_Q_xy.h"
@@ -141,7 +141,7 @@ int main(int argc, const char* argv[])
 	}
 	else
 	{
-		std::cout << "n_queen_11 <number of queens>" << std::endl;
+		std::cout << "n_queen_encoder_11 <number of queens>" << std::endl;
 		return 0;
 	}
 }

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="n_queen_11.cpp">
+    <ClCompile Include="n_queen_encoder_11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
