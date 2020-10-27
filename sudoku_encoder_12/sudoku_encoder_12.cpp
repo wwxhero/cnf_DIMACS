@@ -13,7 +13,7 @@ void EachCellContainsOneDigit(const SudokuGrid& grid, Formula& formula)
 		; it_cell != cells.end()
 		; it_cell ++)
 	{
-		const std::list<int>& X = grid.fullX();
+		const std::list<int>& X = grid.xDomain_rc(it_cell->row_i, it_cell->col_i);
 		Clause cls;
 		for (auto it_x = X.begin()
 			; it_x != X.end()
@@ -35,7 +35,7 @@ void EachCellContainsNoMoreThanOneDigit(const SudokuGrid& grid, Formula& formula
 		; it_cell != cells.end()
 		; it_cell ++)
 	{
-		const std::list<int>& X = grid.fullX();
+		const std::list<int>& X = grid.xDomain_rc(it_cell->row_i, it_cell->col_i);
 		auto it_x_1_end = X.end();
 		auto it_x_2_end = it_x_1_end;
 		it_x_1_end--;

@@ -18,9 +18,11 @@ public:
 		bool rExists[9][10]; // rExists[id_r][n] = true: n in [1-9] exists on row id_r
 		bool cExists[9][10];
 		bool gExists[9][10];
+		bool rcExists[9][9][10]; //rcExists[r][c][n] = true: n in [1-9] exists on cell(r, c)
 		memset(rExists, true, sizeof(bool) * 90);
 		memset(cExists, true, sizeof(bool) * 90);
 		memset(gExists, true, sizeof(bool) * 90);
+		memset(rcExists, true, sizeof(bool) * 810);
 		for(int r = 0; r < 9 && initialized; r ++)
 		{
 			for (int c = 0; c < 9 && initialized; c ++)
@@ -41,9 +43,13 @@ public:
 					}
 					else
 					{
-						rExists[r][val_cell] = false; //remove val_cell from row 'r' domain
-						cExists[c][val_cell] = false; //remove val_cell from row 'c' domain
-						gExists[g][val_cell] = false; //remove val_cell from row 'g' domain
+						rExists[r][val_cell] = false; 		//remove val_cell from row 'r' domain
+						cExists[c][val_cell] = false; 		//remove val_cell from column 'c' domain
+						gExists[g][val_cell] = false; 		//remove val_cell from grid 'g' domain
+						for (int c_sub = 0; c_sub < 9; c_sub ++)
+							rcExists[r][c_sub][val_cell] = false;	//remove val_cell from cell 'r, c' domain
+						for (int r_sub = 0; r_sub < 9; r_sub ++)
+							rcExists[r_sub][c][val_cell] = false;	//remove val_cell from cell 'r, c' domain
 					}
 				}
 				if (vals)
@@ -63,7 +69,18 @@ public:
 						m_c2X[i_g].push_back(x);
 					if (gExists[i_g][x])
 						m_g2X[i_g].push_back(x);
+				}
+			}
 
+			for (int r = 0; r < 9; r ++)
+			{
+				for (int c = 0; c < 9; c ++)
+				{
+					for (int x = 1; x < 10; x ++)
+					{
+						if (rcExists[r][c][x])
+							m_rc2X[r][c].push_back(x);
+					}
 				}
 			}
 		}
@@ -118,6 +135,10 @@ public:
 	{
 		return m_fullX;
 	}
+	const std::list<int>& xDomain_rc(int row_i, int col_i) const
+	{
+		return m_rc2X[row_i][col_i];
+	}
 private:
 	std::list<Cell> m_lstCells;
 	std::list<Cell> m_r2cells[9];
@@ -126,6 +147,7 @@ private:
 	std::list<int>	m_c2X[9];
 	std::list<Cell> m_g2cells[9];
 	std::list<int>	m_g2X[9];
+	std::list<int>	m_rc2X[9][9];
 	const std::list<int> m_fullX;
 };
 
