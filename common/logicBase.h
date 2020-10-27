@@ -99,15 +99,18 @@ class Formula
 public:
 	Formula(int n_props)
 		: m_nProps(n_props)
+		, m_nClses(0)
 	{
 	}
 	void Add(Clause& cls)
 	{
+		if (cls.isCnf())
+			m_nClses ++;
 		m_clses.push_back(std::move(cls));
 	}
 	void Dump(std::ostream& outs) const
 	{
-		outs << "p cnf " << m_nProps << " " << m_clses.size() << std::endl;
+		outs << "p cnf " << m_nProps << " " << m_nClses << std::endl;
 		for (auto it_cls = m_clses.begin()
 			; it_cls != m_clses.end()
 			; it_cls ++)
@@ -117,6 +120,7 @@ public:
 	}
 private:
 	int m_nProps;
+	int m_nClses;
 	std::list<Clause> m_clses;
 };
 
