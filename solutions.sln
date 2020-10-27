@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1209
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pigeon_hold_10", "pigeon_hold_10\pigeon_hold_10.vcxproj", "{C947DA85-D9F8-4E85-9E77-B0D8641A4553}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "n_queen_11", "n_queen_11\n_queen_11.vcxproj", "{054028D7-AB2E-479E-B13C-62490E3C2A81}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "n_queen_decoder_11", "n_queen_decoder_11\n_queen_decoder_11.vcxproj", "{D7E1FEC6-636A-4BEB-8AB0-C0EADC30D16B}"
@@ -19,6 +21,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Debug|x64.ActiveCfg = Debug|x64
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Debug|x64.Build.0 = Debug|x64
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Debug|x86.ActiveCfg = Debug|Win32
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Debug|x86.Build.0 = Debug|Win32
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Release|x64.ActiveCfg = Release|x64
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Release|x64.Build.0 = Release|x64
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Release|x86.ActiveCfg = Release|Win32
+		{C947DA85-D9F8-4E85-9E77-B0D8641A4553}.Release|x86.Build.0 = Release|Win32
 		{054028D7-AB2E-479E-B13C-62490E3C2A81}.Debug|x64.ActiveCfg = Debug|x64
 		{054028D7-AB2E-479E-B13C-62490E3C2A81}.Debug|x64.Build.0 = Debug|x64
 		{054028D7-AB2E-479E-B13C-62490E3C2A81}.Debug|x86.ActiveCfg = Debug|Win32
