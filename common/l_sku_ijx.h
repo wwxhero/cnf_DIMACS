@@ -47,9 +47,17 @@ public:
 						cExists[c][val_cell] = false; 		//remove val_cell from column 'c' domain
 						gExists[g][val_cell] = false; 		//remove val_cell from grid 'g' domain
 						for (int c_sub = 0; c_sub < 9; c_sub ++)
-							rcExists[r][c_sub][val_cell] = false;	//remove val_cell from cell 'r, c' domain
+							rcExists[r][c_sub][val_cell] = false;	//remove val_cell from cell 'r, *' domain
 						for (int r_sub = 0; r_sub < 9; r_sub ++)
-							rcExists[r_sub][c][val_cell] = false;	//remove val_cell from cell 'r, c' domain
+							rcExists[r_sub][c][val_cell] = false;	//remove val_cell from cell '*, c' domain
+						int r_g_start = ((int)g/3)*3;
+						int r_g_end = r_g_start + 3;
+						int c_g_start = (g%3)*3;
+						int c_g_end = c_g_start + 3;
+						for (int r_g = r_g_start; r_g < r_g_end; r_g ++)
+							for (int c_g = c_g_start; c_g < c_g_end; c_g ++)
+								rcExists[r_g][c_g][val_cell] = false;	//remove val_cell from cell 'r, c' domain where (r, c) in group g
+
 					}
 				}
 				if (vals)
