@@ -12,7 +12,7 @@ public:
 		: m_fullX({1, 2, 3, 4, 5, 6, 7, 8, 9})
 	{
 	}
-	bool Initialize(std::istream& input)
+	bool Initialize(std::istream& input, char* vals = NULL)
 	{
 		bool initialized = true;
 		for(int r = 0; r < 9 && initialized; r ++)
@@ -32,6 +32,8 @@ public:
 					int g = (r/3) * 3 + (c/3);
 					m_g2cells[g].push_back(cell);
 				}
+				if (vals)
+					vals[r*9 + c] = char(val_cell + '0');
 			}
 		}
 #if 0
@@ -85,12 +87,23 @@ class L_SKU_ijx : public Literal
 {
 public:
 	L_SKU_ijx(int i_r, int i_c, int x, bool val)
-		: Literal(val, i_r * 100 + i_c * 10 + (x-1))
+		: Literal(val, i_r * 100 + i_c * 10 + x)
 		, m_r(i_r)
 		, m_c(i_c)
 		, m_x(x)
 	{
 		assert(x > 0 && x < 10);
+	}
+
+	L_SKU_ijx(int code)
+		: Literal(code > 0, std::abs(code))
+		, m_r(m_absCode/100)
+		, m_c((m_absCode - 100 * m_r)/10)
+		, m_x(m_absCode - 100 * m_r - 10 * m_c)
+	{
+		assert(-1 < m_r && m_r < 9);
+		assert(-1 < m_c && m_c < 9);
+		assert( 0 < m_x && m_x < 10);
 	}
 
 	virtual void Dump(std::ostream& outs) const override

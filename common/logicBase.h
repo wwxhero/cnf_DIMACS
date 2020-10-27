@@ -129,7 +129,8 @@ bool ParseIter(std::istream& iss, Functor litFac, Clause& cls)
 		if (0 != code_l)
 		{
 			Literal* lit = litFac(code_l);
-			cls.Add(lit);
+			if (lit)
+				cls.Add(lit);
 		}
 	}
 	return cls.isCnf();
