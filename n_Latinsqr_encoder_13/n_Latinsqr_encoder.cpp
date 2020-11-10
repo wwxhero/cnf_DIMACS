@@ -75,11 +75,45 @@ void Permutation(int n_squares, Formula& fla)
 void XstarXeqX(int n_squares, Formula& fla)
 {
 	//x * x = x for x in {0, ..., n-1}
+	Clause cls_cmmt("x * x = x");
+	fla.Add(cls_cmmt);
+	for (int x = 0; x < n_squares; x ++)
+	{
+		Clause cls;
+		Literal* l_xxx = new L_Latin_rcx(n_squares, x, x, x, true);
+		cls.Add(l_xxx);
+		fla.Add(cls);
+	}
 }
 
 void Steins3rdLaw(int n_squares, Formula& fla)
 {
 	//(x*y) * (y*x) = y
+	Clause cls_cmmt("(x*y) * (y*x) = y");
+	fla.Add(cls_cmmt);
+	int x_end = n_squares - 1;
+	int y_end = n_squares;
+	for (int x = 0; x < x_end; x ++)
+	{
+		for (int y = 0; y < y_end; y ++)
+		{
+			for (int xy = 0; xy < n_squares; xy ++)
+			{
+				for (int yx = 0; yx < n_squares; yx ++)
+				{
+					Clause cls;
+					Literal* neg_xy = new L_Latin_rcx(n_squares, x, y, xy, false);
+					Literal* neg_yx = new L_Latin_rcx(n_squares, y, x, yx, false);
+					Literal*  xy_yx = new L_Latin_rcx(n_squares, xy, yx, y, true);
+					cls.Add(neg_xy);
+					cls.Add(neg_yx);
+					cls.Add(xy_yx);
+					fla.Add(cls);
+				}
+			}
+		}
+	}
+
 }
 
 using namespace std;
