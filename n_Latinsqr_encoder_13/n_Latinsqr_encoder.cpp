@@ -3,14 +3,73 @@
 
 #include <iostream>
 #include "logicBase.h"
-void PermutationRow(int n_squares, Formula& fla)
+void Permutation(int n_squares, Formula& fla)
 {
 	//for every row is a permuatation of the numbers from N
-}
+	Clause cls_cmmt("1. Each row and column is a permuatation!!!");
+	fla.Add(cls_cmmt);
 
-void PermutationCol(int n_squares, Formula& fla)
-{
-	//for every col is a permuatation of the numbers from N
+	Clause cls_cmmt_11("1.1 Each cell has number allocated!!!");
+	fla.Add(cls_cmmt_11);
+	for (int r = 0; r < n_squares; r ++)
+	{
+		for (int c = 0; c < n_squares; c ++)
+		{
+			Clause cls;
+			for (int x = 0; x < n_squares; x ++)
+			{
+				Literal* rcx = new L_Latin_rcx(r, c, x, true);
+				cls.Add(rcx);
+			}
+			fla.Add(cls);
+		}
+	}
+
+	Clause cls_cmmt_12("1.2 Each row is a permutation!!!");
+	fla.Add(cls_cmmt_12);
+	for (int r = 0; r < n_squares; r ++)
+	{
+		int c_1_end = n_squares - 1;
+		int c_2_end = n_squares;
+		for (int c_1 = 0; c_1 < c_1_end; c_1 ++)
+		{
+			for (int c_2 = c_1 + 1; c_2 < c_2_end; c_2 ++)
+			{
+				for (int x = 0; x < n_squares; x ++)
+				{
+					Clause cls;
+					Literal* neg_rc1x = new L_Latin_rcx(r, c_1, x, false);
+					Literal* neg_rc2x = new L_Latin_rcx(r, c_2, x, false);
+					cls.Add(neg_rc1x);
+					cls.Add(neg_rc2x);
+					fla.Add(cls);
+				}
+			}
+		}
+	}
+
+	Clause cls_cmmt_13("1.3 Each column is a permuatation!!!");
+	cla.Add(cls_cmmt_13);
+	for (int c = 0; c < n_squares; c ++)
+	{
+		int r_1_end = n_squares - 1;
+		int r_2_end = n_squares;
+		for (int r_1 = 0; r_1 < r_1_end; r_1 ++)
+		{
+			for (int r_2 = r_1 + 1; r_2 < r_2_end; r_2 ++)
+			{
+				for (int x = 0; x < n_squares; x ++)
+				{
+					Clause cls;
+					Literal* neg_r1cx = new L_Latin_rcx(r_1, c, x, false);
+					Literal* neg_r2cx = new L_Latin_rcx(r_2, c, x, false);
+					cls.Add(neg_r1cx);
+					cls.Add(neg_r2cx);
+					fla.Add(cls);
+				}
+			}
+		}
+	}
 }
 
 void XstarXeqX(int n_squares, Formula& fla)
@@ -26,25 +85,24 @@ void Steins3rdLaw(int n_squares, Formula& fla)
 using namespace std;
 int main(int argc, const char* argv[])
 {
-    if (2 != argc)
-    {
-    	cout << "n_Latinsqr_encoder <number of squares>" << endl;
-    	return 0;
-    }
-    else
-    {
-    	int n_latin = atoi(argv[1]);
-    	Formula fla(n_latin * n_latin * n_latin);
-    	stringstream cmt;
-    	cmt << "c Latin square with " << n_latin << "x" << n_latin <<" squares!!!";
-    	cout << cmt.str() << endl;
-    	PermutationRow(n_latin, fla);
-    	PermutationCol(n_latin, fla);
-    	XstarXeqX(n_latin, fla);
-    	Steins3rdLaw(n_latin, fla);
-    	fla.Dump(cout);
-    	return 1;
-    }
+	if (2 != argc)
+	{
+		cout << "n_Latinsqr_encoder <number of squares>" << endl;
+		return 0;
+	}
+	else
+	{
+		int n_latin = atoi(argv[1]);
+		Formula fla(n_latin * n_latin * n_latin);
+		stringstream cmt;
+		cmt << "c Latin square with " << n_latin << "x" << n_latin <<" squares!!!";
+		cout << cmt.str() << endl;
+		Permutation(n_latin, fla);
+		XstarXeqX(n_latin, fla);
+		Steins3rdLaw(n_latin, fla);
+		fla.Dump(cout);
+		return 1;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
