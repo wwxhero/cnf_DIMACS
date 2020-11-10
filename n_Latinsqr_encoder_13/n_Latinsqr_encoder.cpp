@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include "logicBase.h"
+#include "L_Latin_rcx.h"
 void Permutation(int n_squares, Formula& fla)
 {
 	//for every row is a permuatation of the numbers from N
@@ -18,7 +18,7 @@ void Permutation(int n_squares, Formula& fla)
 			Clause cls;
 			for (int x = 0; x < n_squares; x ++)
 			{
-				Literal* rcx = new L_Latin_rcx(r, c, x, true);
+				Literal* rcx = new L_Latin_rcx(n_squares, r, c, x, true);
 				cls.Add(rcx);
 			}
 			fla.Add(cls);
@@ -38,8 +38,8 @@ void Permutation(int n_squares, Formula& fla)
 				for (int x = 0; x < n_squares; x ++)
 				{
 					Clause cls;
-					Literal* neg_rc1x = new L_Latin_rcx(r, c_1, x, false);
-					Literal* neg_rc2x = new L_Latin_rcx(r, c_2, x, false);
+					Literal* neg_rc1x = new L_Latin_rcx(n_squares, r, c_1, x, false);
+					Literal* neg_rc2x = new L_Latin_rcx(n_squares, r, c_2, x, false);
 					cls.Add(neg_rc1x);
 					cls.Add(neg_rc2x);
 					fla.Add(cls);
@@ -49,7 +49,7 @@ void Permutation(int n_squares, Formula& fla)
 	}
 
 	Clause cls_cmmt_13("1.3 Each column is a permuatation!!!");
-	cla.Add(cls_cmmt_13);
+	fla.Add(cls_cmmt_13);
 	for (int c = 0; c < n_squares; c ++)
 	{
 		int r_1_end = n_squares - 1;
@@ -61,8 +61,8 @@ void Permutation(int n_squares, Formula& fla)
 				for (int x = 0; x < n_squares; x ++)
 				{
 					Clause cls;
-					Literal* neg_r1cx = new L_Latin_rcx(r_1, c, x, false);
-					Literal* neg_r2cx = new L_Latin_rcx(r_2, c, x, false);
+					Literal* neg_r1cx = new L_Latin_rcx(n_squares, r_1, c, x, false);
+					Literal* neg_r2cx = new L_Latin_rcx(n_squares, r_2, c, x, false);
 					cls.Add(neg_r1cx);
 					cls.Add(neg_r2cx);
 					fla.Add(cls);
