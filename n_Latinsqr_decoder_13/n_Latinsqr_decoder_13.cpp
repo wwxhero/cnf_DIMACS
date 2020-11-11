@@ -3,6 +3,85 @@
 
 #include <fstream>
 #include "L_Latin_rcx.h"
+
+bool VerifyPerm_row(int* grid, int n_latin)
+{
+	int* N = new int[n_latin];
+	bool verified = true;
+	for (int r = 0
+		; r < n_latin && verified
+		; r ++)
+	{
+		memset(N, 0, sizeof(int)*n_latin);
+		for (int c = 0
+			; c < n_latin
+			; c ++)
+		{
+			int v = grid[r * n_latin + c];
+			N[v] ++;
+		}
+
+		for (int i = 0
+			; i < n_latin && verified
+			; i ++)
+			verified = (N[i] == 1);
+
+	}
+	delete [] N;
+	return verified;
+}
+
+
+bool VerifyPerm_col(int* grid, int n_latin)
+{
+	int* N = new int[n_latin];
+	bool verified = true;
+	for (int c = 0
+		; c < n_latin && verified
+		; c ++)
+	{
+		memset(N, 0, sizeof(int)*n_latin);
+		for (int r = 0
+			; r < n_latin
+			; r ++)
+		{
+			int v = grid[r * n_latin + c];
+			N[v] ++;
+		}
+
+		for (int i = 0
+			; i < n_latin && verified
+			; i ++)
+			verified = (N[i] == 1);
+
+	}
+	delete [] N;
+	return verified;
+}
+
+bool VerifyXstarXeqX(int* grid, int n_latin)
+{
+	bool verified = true;
+	for (int x = 0; x < n_latin && verified; x ++)
+		verified = (x == grid[x * n_latin + x]);
+	return verified;
+}
+
+bool VerifyStein3rdLaw(int* grid, int n_latin)
+{
+	bool verified = true;
+	for (int x = 0; x < n_latin && verified; x ++)
+	{
+		for (int y = 0; y < n_latin && verified; y ++)
+		{
+			int xy = grid[x * n_latin + y];
+			int yx = grid[y * n_latin + x];
+			verified = (y == grid[xy * n_latin + yx]);
+		}
+	}
+	return verified;
+}
+
 int main(int argc, const char* argv[])
 {
     if (3 == argc)
@@ -50,6 +129,16 @@ int main(int argc, const char* argv[])
 					}
 					std::cout << std::endl;
 				}
+
+				bool pass = VerifyPerm_row(grid, n_latin)
+						  && VerifyPerm_col(grid, n_latin)
+						  && VerifyXstarXeqX(grid, n_latin)
+						  && VerifyStein3rdLaw(grid, n_latin);
+				if (pass)
+					std::cout << "\nPass" << std::endl;
+				else
+					std::cout << "\nFail" << std::endl;
+
 				delete [] grid;
 				return 1;
 			}
