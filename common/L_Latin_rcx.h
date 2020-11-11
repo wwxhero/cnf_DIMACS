@@ -4,7 +4,6 @@ class L_Latin_rcx : public Literal
 public:
 	L_Latin_rcx(int n, int r, int c, int x, bool val)
 		: Literal(val, x + c * n + r * n * n + 1)
-		, d(0)
 		, m_r(r)
 		, m_c(c)
 		, m_x(x)
@@ -13,10 +12,9 @@ public:
 
 	L_Latin_rcx(int code, int n)
 		: Literal(code > 0, std::abs(code))
-		, d(m_absCode-1)
-		, m_r(d/(n * n))
-		, m_c((d - m_r * n * n)/n)
-		, m_x(d%n)
+		, m_r((m_absCode-1)/(n * n))
+		, m_c(((m_absCode-1) - m_r * n * n)/n)
+		, m_x((m_absCode-1)%n)
 	{
 	}
 
@@ -32,9 +30,8 @@ public:
 #endif
 	}
 
-private:
+public:
 	const int m_r;
 	const int m_c;
 	const int m_x;
-	const int d;
 };
